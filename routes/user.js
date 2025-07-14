@@ -10,30 +10,48 @@ const {
   MatchParticipant,
 } = require('../models');
 
-
-// 아이콘/메인 챔피언만 변경
-router.put('/profile/settings', authenticateToken, async (req, res) => {
-  const userId = req.user.id;
-  const { profile_icon_id, main_champion_id } = req.body;
-
-  try {
-    await UserProfile.update(
-      { profile_icon_id, main_champion_id },
-      { where: { user_id: userId } }
-    );
-
-    res.json({ success: true, message: 'Profile settings updated' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: 'Profile settings update failed', error: err.message });
-  }
-});
-
 // 내 프로필 조회
 router.get('/profile', authenticateToken, async (req, res) => {
   const profile = await UserProfile.findOne({ where: { user_id: req.user.id } });
   res.json(profile);
 });
+
+
+// 전체 또는 일부 프로필 수정
+router.put('/profile', authenticateToken, async (req, res) => {
+  const userId = req.user.id;
+  const fieldsToUpdate = {};
+
+  // 보낸 값만 업데이트
+  if (req.body.profile_icon_id !== undefined) {
+    fieldsToUpdate.profile_icon_id = req.body.profile_icon_id;
+  }
+  if (req.body.main_champion_id !== undefined) {
+    fieldsToUpdate.main_champion_id = req.body.main_champion_id;
+  }
+  if (req.body.nickname !== undefined) {
+    fieldsToUpdate.nickname = req.body.nickname;
+  }
+  if (req.body.level !== undefined) {
+    fieldsToUpdate.level = req.body.level;
+  }
+  if (req.body.exp !== undefined) {
+    fieldsToUpdate.exp = req.body.exp;
+  }
+  if (req.body.gold !== undefined) {
+    fieldsToUpdate.gold = req.body.gold;
+  }
+
+  try {
+    await UserProfile.update(fieldsToUpdate, { where: { user_id: userId } });
+    const updated = await UserProfile.findOne({ where: { user_id: userId } });
+    res.json(updated);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Profile update failed', error: err.message });
+  }
+});
+
 
 // 내 전투 전적 (전투 기록)
 router.get('/record', authenticateToken, async (req, res) => {
