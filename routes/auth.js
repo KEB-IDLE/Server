@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { sequelize } = require('../models'); // 트랜잭션을 위해 필요
-const { User, UserProfile, UserRecord, UserChampion, UserDeck } = require('../models');
+const { User, UserProfile, UserRecord } = require('../models');
 
 router.post('/register', async (req, res) => {
   const { email, password, nickname } = req.body;
@@ -38,22 +38,6 @@ router.post('/register', async (req, res) => {
     await UserRecord.create({
       user_id: userId,
       last_login_at: new Date()
-    }, { transaction: t });
-
-    // 기본 해금 챔피언들 (예: 1, 2, 3)
-    const defaultChampions = [1, 2, 3];
-    const unlockData = defaultChampions.map(champion_id => ({
-      user_id: userId,
-      champion_id
-      // is_unlocked은 defaultValue: true 자동 적용
-    }));
-    await UserChampion.bulkCreate(unlockData, { transaction: t });
-
-    // 기본 덱 등록 (1번 슬롯, 챔피언 1, 2, 3 포함)
-    await UserDeck.create({
-      user_id: userId,
-      slot_number: 1,
-      champion_ids: defaultChampions
     }, { transaction: t });
 
     await t.commit(); // 트랜잭션 성공 시 커밋

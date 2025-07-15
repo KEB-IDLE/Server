@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     user_id: { type: DataTypes.INTEGER, primaryKey: true },
     nickname: { type: DataTypes.STRING(50), unique: true, allowNull: true },
     profile_icon_id: { type: DataTypes.INTEGER, defaultValue: 0 },
-    main_champion_id: { type: DataTypes.INTEGER,defaultValue: 0 },
+    profile_char_id: { type: DataTypes.INTEGER, defaultValue: 0 },
     level: { type: DataTypes.INTEGER, defaultValue: 1 },
     exp: { type: DataTypes.INTEGER, defaultValue: 0 },
     gold: { type: DataTypes.INTEGER, defaultValue: 0 },

@@ -4,9 +4,6 @@ const authenticateToken = require('../middlewares/auth');
 const {
   UserProfile,
   UserRecord,
-  UserChampion,
-  Champion,
-  UserDeck,
   MatchParticipant,
 } = require('../models');
 
@@ -15,7 +12,6 @@ router.get('/profile', authenticateToken, async (req, res) => {
   const profile = await UserProfile.findOne({ where: { user_id: req.user.id } });
   res.json(profile);
 });
-
 
 // 전체 또는 일부 프로필 수정
 router.put('/profile', authenticateToken, async (req, res) => {
@@ -26,8 +22,8 @@ router.put('/profile', authenticateToken, async (req, res) => {
   if (req.body.profile_icon_id !== undefined) {
     fieldsToUpdate.profile_icon_id = req.body.profile_icon_id;
   }
-  if (req.body.main_champion_id !== undefined) {
-    fieldsToUpdate.main_champion_id = req.body.main_champion_id;
+  if (req.body.profile_char_id !== undefined) {
+    fieldsToUpdate.profile_char_id = req.body.profile_champion_id;
   }
   if (req.body.nickname !== undefined) {
     fieldsToUpdate.nickname = req.body.nickname;
@@ -96,53 +92,6 @@ function calculateTier(rank_point) {
   if (rank_point >= 10) return 'Bronze';
   return 'Iron';
 }
-
-
-
-// 내 보유 챔피언 목록
-router.get('/champion', authenticateToken, async (req, res) => {
-  const champions = await UserChampion.findAll({
-    where: { user_id: req.user.id },
-    include: [{ model: Champion }]
-  });
-  res.json(champions);
-});
-
-// 챔피언 해금
-router.post('/champion/unlock', authenticateToken, async (req, res) => {
-  const { champion_id } = req.body;
-  await UserChampion.create({
-    user_id: req.user.id,
-    champion_id
-  });
-  res.json({ message: '챔피언 해금 완료' });
-});
-
-// 내 덱 목록 조회
-router.get('/deck', authenticateToken, async (req, res) => {
-  const decks = await UserDeck.findAll({ where: { user_id: req.user.id } });
-  res.json(decks);
-});
-
-// 덱 저장 또는 수정
-router.post('/deck', authenticateToken, async (req, res) => {
-  const { deck_id, deck_name, champion_ids } = req.body;
-
-  if (deck_id) {
-    await UserDeck.update(
-      { deck_name, champion_ids },
-      { where: { id: deck_id, user_id: req.user.id } }
-    );
-    res.json({ message: '덱 수정 완료' });
-  } else {
-    await UserDeck.create({
-      user_id: req.user.id,
-      deck_name,
-      champion_ids
-    });
-    res.status(201).json({ message: '덱 생성 완료' });
-  }
-});
 
 // 내 매치 히스토리
 router.get('/match/history', authenticateToken, async (req, res) => {
