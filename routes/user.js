@@ -43,7 +43,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
   }
 
   try {
-    await UserProfile.update(fieldsToUpdate, { where: { user_id: userId } });
+    await UserProfile.update(fieldsToUpdate, { where: { user_id: userId } });   // DB 저장
     const updated = await UserProfile.findOne({ where: { user_id: userId } });
     res.json(updated);
   } catch (err) {
@@ -58,6 +58,46 @@ router.get('/record', authenticateToken, async (req, res) => {
   const record = await UserRecord.findOne({ where: { user_id: req.user.id } });
   res.json(record);
 });
+
+// 내 전적 수정 (매치 수, 승/패 수, 점수)
+router.put('/record', authenticateToken, async (req, res) => {
+  const { rank_match_count, rank_wins, rank_losses, rank_point } = req.body;
+
+  try {
+    const user_id = req.user.id;
+
+    // 사용자 레코드 찾기
+    const record = await UserRecord.findOne({ where: { user_id } });
+    if (!record) return res.status(404).json({ message: 'User record not found' });
+
+    // 필드 업데이트
+    record.rank_match_count = rank_match_count;
+    record.rank_wins = rank_wins;
+    record.rank_losses = rank_losses;
+    record.rank_point = rank_point;
+
+    // 티어 계산 로직
+    record.tier = calculateTier(rank_point);
+
+    await record.save();    // DB 저장
+    res.json({ message: 'User record updated successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+function calculateTier(rank_point) {
+  if (rank_point >= 500) return 'Challenger';
+  if (rank_point >= 400) return 'Master';
+  if (rank_point >= 300) return 'Diamond';
+  if (rank_point >= 200) return 'Gold';
+  if (rank_point >= 100) return 'Silver';
+  if (rank_point >= 10) return 'Bronze';
+  return 'Iron';
+}
+
+
 
 // 내 보유 챔피언 목록
 router.get('/champion', authenticateToken, async (req, res) => {
