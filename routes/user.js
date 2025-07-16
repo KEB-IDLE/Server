@@ -13,41 +13,65 @@ router.get('/profile', authenticateToken, async (req, res) => {
   res.json(profile);
 });
 
-// 전체 또는 일부 프로필 수정
-router.put('/profile', authenticateToken, async (req, res) => {
-  const userId = req.user.id;
-  const fieldsToUpdate = {};
-
-  // 보낸 값만 업데이트
-  if (req.body.profile_icon_id !== undefined) {
-    fieldsToUpdate.profile_icon_id = req.body.profile_icon_id;
-  }
-  if (req.body.profile_char_id !== undefined) {
-    fieldsToUpdate.profile_char_id = req.body.profile_champion_id;
-  }
-  if (req.body.nickname !== undefined) {
-    fieldsToUpdate.nickname = req.body.nickname;
-  }
-  if (req.body.level !== undefined) {
-    fieldsToUpdate.level = req.body.level;
-  }
-  if (req.body.exp !== undefined) {
-    fieldsToUpdate.exp = req.body.exp;
-  }
-  if (req.body.gold !== undefined) {
-    fieldsToUpdate.gold = req.body.gold;
-  }
-
+router.put('/profile/icon', authenticateToken, async (req, res) => {
   try {
-    await UserProfile.update(fieldsToUpdate, { where: { user_id: userId } });   // DB 저장
+    const userId = req.user.id;
+    const { profile_icon_id } = req.body;
+    await UserProfile.update({ profile_icon_id }, { where: { user_id: userId } });
     const updated = await UserProfile.findOne({ where: { user_id: userId } });
-    res.json(updated);
+    res.json({ success: true, message: 'Profile icon updated', data: updated });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: 'Profile update failed', error: err.message });
+    res.status(500).json({ success: false, message: 'Failed to update icon', error: err.message });
   }
 });
 
+router.put('/profile/character', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { profile_char_id } = req.body;
+    await UserProfile.update({ profile_char_id }, { where: { user_id: userId } });
+    const updated = await UserProfile.findOne({ where: { user_id: userId } });
+    res.json({ success: true, message: 'Profile character updated', data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Failed to update character', error: err.message });
+  }
+});
+
+router.put('/profile/level', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { level } = req.body;
+    await UserProfile.update({ level }, { where: { user_id: userId } });
+    const updated = await UserProfile.findOne({ where: { user_id: userId } });
+    res.json({ success: true, message: 'Profile level updated', data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Failed to update level', error: err.message });
+  }
+});
+
+router.put('/profile/exp', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { exp } = req.body;
+    await UserProfile.update({ exp }, { where: { user_id: userId } });
+    const updated = await UserProfile.findOne({ where: { user_id: userId } });
+    res.json({ success: true, message: 'Profile exp updated', data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Failed to update exp', error: err.message });
+  }
+});
+
+router.put('/profile/gold', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { gold } = req.body;
+    await UserProfile.update({ gold }, { where: { user_id: userId } });
+    const updated = await UserProfile.findOne({ where: { user_id: userId } });
+    res.json({ success: true, message: 'Profile gold updated', data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Failed to update gold', error: err.message });
+  }
+});
 
 // 내 전투 전적 (전투 기록)
 router.get('/record', authenticateToken, async (req, res) => {
@@ -62,24 +86,44 @@ router.put('/record', authenticateToken, async (req, res) => {
   try {
     const user_id = req.user.id;
 
-    // 사용자 레코드 찾기
+    // 1. 해당 유저의 기록을 먼저 수정
     const record = await UserRecord.findOne({ where: { user_id } });
-    if (!record) return res.status(404).json({ message: 'User record not found' });
+    if (!record) return res.status(404).json({ success: false, message: 'User record not found' });
 
-    // 필드 업데이트
     record.rank_match_count = rank_match_count;
     record.rank_wins = rank_wins;
     record.rank_losses = rank_losses;
     record.rank_point = rank_point;
-
-    // 티어 계산 로직
     record.tier = calculateTier(rank_point);
 
-    await record.save();    // DB 저장
-    res.json({ message: 'User record updated successfully' });
+    await record.save();
+
+    // 2. 전체 유저 정렬 후 글로벌 랭킹 업데이트
+    const allRecords = await UserRecord.findAll({
+      order: [['rank_point', 'DESC']]
+    });
+
+    for (let i = 0; i < allRecords.length; i++) {
+      allRecords[i].global_rank = i + 1; // 1등부터 시작
+      await allRecords[i].save(); // 순위 저장
+    }
+
+    // 3. 다시 조회해서 최신 정보 반환
+    const updated = await UserRecord.findOne({ where: { user_id } });
+
+    res.json({
+      success: true,
+      message: 'User record and global rank updated',
+      data: updated
+    });
+
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: err.message
+    });
   }
 });
 
