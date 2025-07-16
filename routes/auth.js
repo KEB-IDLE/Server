@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { sequelize } = require('../models'); // 트랜잭션을 위해 필요
-const { User, UserProfile, UserRecord } = require('../models');
+const { User, UserProfile, UserRecord, UserProfileIcon } = require('../models');
 
 router.post('/register', async (req, res) => {
   const { email, password, nickname } = req.body;
@@ -25,20 +25,26 @@ router.post('/register', async (req, res) => {
     // 유저 생성
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({ email, password: hashedPassword }, { transaction: t });
-
     const userId = user.id;
 
-    // 유저 프로필 생성 (defaultValue 사용)
+    // 유저 프로필 생성
     await UserProfile.create({
       user_id: userId,
-      nickname // 나머지는 defaultValue 적용됨
+      nickname
     }, { transaction: t });
 
-    // 유저 전적 생성 (defaultValue 사용)
+    // 유저 전적 생성
     await UserRecord.create({
       user_id: userId,
       last_login_at: new Date()
     }, { transaction: t });
+
+    // 유저 기본 아이콘 부여 (1, 2, 3)
+    await UserProfileIcon.bulkCreate([
+      { user_id: userId, icon_id: 1 },
+      { user_id: userId, icon_id: 2 },
+      { user_id: userId, icon_id: 3 },
+    ], { transaction: t });
 
     await t.commit(); // 트랜잭션 성공 시 커밋
     res.status(201).json({ success: true, message: 'Register Success', userId });
@@ -48,7 +54,6 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ success: false, message: 'Register Failed', error: err.message });
   }
 });
-
 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
