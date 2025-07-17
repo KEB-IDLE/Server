@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { sequelize } = require('../models'); // 트랜잭션을 위해 필요
-const { User, UserProfile, UserRecord, UserProfileIcon } = require('../models');
+const { sequelize } = require('../../models'); // 트랜잭션을 위해 필요
+const { User, UserProfile, UserRecord, UserProfileIcon } = require('../../models');
 
 router.post('/register', async (req, res) => {
   const { email, password, nickname } = req.body;

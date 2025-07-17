@@ -19,6 +19,8 @@ db.UserRecord.belongsTo(db.User, { foreignKey: 'user_id' });
 db.User.hasMany(db.UserProfileIcon, { foreignKey: 'user_id', onDelete: 'CASCADE' });  // 관계 추가
 db.UserProfileIcon.belongsTo(db.User, { foreignKey: 'user_id' });                      // 관계 추가
 
+db.UserRecord.belongsTo(db.UserProfile, { foreignKey: 'user_id', targetKey: 'user_id' });
+
 db.Match.hasMany(db.MatchParticipant, { foreignKey: 'match_id' });
 db.MatchParticipant.belongsTo(db.Match, { foreignKey: 'match_id' });
 
