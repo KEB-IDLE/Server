@@ -2,7 +2,8 @@ version: '3.8'
 
 services:
   server:
-    build: .
+    build:
+      context: ./express
     ports:
       - "3000:3000"
     environment:
@@ -15,7 +16,7 @@ services:
     depends_on:
       - db
     volumes:
-      - .:/app
+      - ./express:/app
     restart: always
 
   db:
