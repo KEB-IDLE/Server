@@ -11,10 +11,10 @@ const matchRoutes = require('./match/match');
 
 // 경로에 등록
 router.use('/auth', authRoutes);                 // /api/auth/*
-router.use('/ranking', globalRankingRoutes); // /api/ranking/global/*
+router.use('/ranking', globalRankingRoutes); // /api/ranking/*
 router.use('/user/icons', userIconRoutes);        // /api/user/icon/*
 router.use('/user/profile', userProfileRoutes);  // /api/user/profile/*
 router.use('/user/record', userRecordRoutes);    // /api/user/record/*
-router.use('/match', matchRoutes);  // /api/match/*
+router.use('/match', matchRoutes);
 
 module.exports = router;

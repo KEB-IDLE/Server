@@ -3,7 +3,7 @@ version: '3.8'
 services:
   server:
     build:
-      context: ./express
+      context: .       # 루트 디렉토리 기준으로 Dockerfile 찾음
     ports:
       - "3000:3000"
     environment:
@@ -15,18 +15,23 @@ services:
       - PORT=${PORT}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
     depends_on:
       - db
       - redis
     volumes:
-      - ./express:/app
+      - .:/app
     restart: always
+    command: npm run start  # 명시적 실행
 
   db:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3307:3306"
     volumes:
