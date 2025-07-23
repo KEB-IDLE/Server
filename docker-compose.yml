@@ -4,6 +4,7 @@ services:
   server:
     build:
       context: .       # 루트 디렉토리 기준으로 Dockerfile 찾음
+    image: myserver  # 직접 이름 지정
     ports:
       - "3000:3000"
     environment:

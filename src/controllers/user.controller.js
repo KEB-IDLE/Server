@@ -1,21 +1,11 @@
-const express = require('express');
-const router = express.Router();
-const authenticateToken = require('../../middlewares/auth');
-const {
-  UserProfile,
-  UserRecord,
-  MatchParticipant,
-  UserProfileIcon,
-  sequelize  
-} = require('../../models');
+const { UserProfile } = require('../models');
 
-// 내 프로필 조회
-router.get('/', authenticateToken, async (req, res) => {
+exports.getProfile = async (req, res) => {
   const profile = await UserProfile.findOne({ where: { user_id: req.user.id } });
   res.json(profile);
-});
+};
 
-router.put('/icon', authenticateToken, async (req, res) => {
+exports.updateProfileIcon = async (req, res) => {
   try {
     const userId = req.user.id;
     const { profile_icon_id } = req.body;
@@ -25,9 +15,9 @@ router.put('/icon', authenticateToken, async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to update icon', error: err.message });
   }
-});
+};
 
-router.put('/character', authenticateToken, async (req, res) => {
+exports.updateProfileCharacter = async (req, res) => {
   try {
     const userId = req.user.id;
     const { profile_char_id } = req.body;
@@ -37,9 +27,9 @@ router.put('/character', authenticateToken, async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to update character', error: err.message });
   }
-});
+};
 
-router.put('/level', authenticateToken, async (req, res) => {
+exports.updateProfileLevel = async (req, res) => {
   try {
     const userId = req.user.id;
     const { level } = req.body;
@@ -49,9 +39,9 @@ router.put('/level', authenticateToken, async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to update level', error: err.message });
   }
-});
+};
 
-router.put('/exp', authenticateToken, async (req, res) => {
+exports.updateProfileExp = async (req, res) => {
   try {
     const userId = req.user.id;
     const { exp } = req.body;
@@ -61,9 +51,9 @@ router.put('/exp', authenticateToken, async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to update exp', error: err.message });
   }
-});
+};
 
-router.put('/gold', authenticateToken, async (req, res) => {
+exports.updateProfileGold = async (req, res) => {
   try {
     const userId = req.user.id;
     const { gold } = req.body;
@@ -73,6 +63,4 @@ router.put('/gold', authenticateToken, async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to update gold', error: err.message });
   }
-});
-
-module.exports = router;
+};

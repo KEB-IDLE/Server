@@ -2,19 +2,15 @@ const express = require('express');
 const router = express.Router();
 
 // 라우터 불러오기
-const authRoutes = require('./auth/auth');
-const globalRankingRoutes = require('./ranking/ranking');
-const userIconRoutes = require('./user/icons');
-const userProfileRoutes = require('./user/profile');
-const userRecordRoutes = require('./user/record');
-const matchRoutes = require('./match/match');
+const authRoutes = require('./auth.routes');
+const matchRoutes = require('./match.routes');
+const rankingRoutes = require('./ranking.routes');
+const userRoutes = require('./user.routes');
 
 // 경로에 등록
-router.use('/auth', authRoutes);                 // /api/auth/*
-router.use('/ranking', globalRankingRoutes); // /api/ranking/*
-router.use('/user/icons', userIconRoutes);        // /api/user/icon/*
-router.use('/user/profile', userProfileRoutes);  // /api/user/profile/*
-router.use('/user/record', userRecordRoutes);    // /api/user/record/*
-router.use('/match', matchRoutes);
+router.use('/auth', authRoutes);         // /api/auth/*
+router.use('/match', matchRoutes);       // /api/match/*
+router.use('/ranking', rankingRoutes);   // /api/ranking/*
+router.use('/user', userRoutes);         // /api/user/*
 
 module.exports = router;

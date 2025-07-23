@@ -1,15 +1,6 @@
-const express = require('express');
-const router = express.Router();
-const authenticateToken = require('../../middlewares/auth');
-const {
-  UserProfile,
-  UserRecord,
-  MatchParticipant,
-  UserProfileIcon,
-  sequelize  
-} = require('../../models');
+const { UserProfile, UserRecord } = require('../models');
 
-router.get('/global', authenticateToken, async (req, res) => {
+exports.getGlobalRanking = async (req, res) => {
   try {
     const records = await UserRecord.findAll({
       order: [['rank_point', 'DESC']],
@@ -20,7 +11,7 @@ router.get('/global', authenticateToken, async (req, res) => {
       }]
     });
 
-    const result = records.map(r => ({
+    const result = records.map((r) => ({
       rank: r.global_rank,
       nickname: r.UserProfile.nickname,
       profile_icon_id: r.UserProfile.profile_icon_id,
@@ -31,7 +22,6 @@ router.get('/global', authenticateToken, async (req, res) => {
       success: true,
       data: result
     });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -40,6 +30,4 @@ router.get('/global', authenticateToken, async (req, res) => {
       error: err.message
     });
   }
-});
-
-module.exports = router;
+};

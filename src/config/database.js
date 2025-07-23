@@ -1,15 +1,5 @@
+// ✅ config/database.js (환경 변수만 사용)
 const { Sequelize } = require('sequelize');
-const dotenv = require('dotenv');
-const fs = require('fs');
-
-// .env 또는 .env.local 로드
-if (fs.existsSync('.env.local')) {
-  dotenv.config({ path: '.env.local' });
-  console.log('env.local 로딩됨 (from config/database.js)');
-} else {
-  dotenv.config();
-  console.log('.env 로딩됨 (from config/database.js)');
-}
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,

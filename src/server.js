@@ -1,15 +1,39 @@
+const dotenv = require('dotenv');
+const fs = require('fs');
+
+if (fs.existsSync('.env.local')) {
+  dotenv.config({ path: '.env.local' });
+  console.log('Loaded env.local');
+} else {
+  dotenv.config();
+  console.log('Loaded .env');
+}
+
 const app = require('./app');
 const { sequelize } = require('./models');
-const { startMatchProcessor } = require('./services/matchProcessor');
+const matchService = require('./services/matchService');
 
 const PORT = process.env.PORT || 3000;
 
-startMatchProcessor();
+async function startServer() {
+  try {
+    await sequelize.sync({ alter: true });
+    console.log('DB connection and synchronization successful');
 
-sequelize.sync({ alter: true })
-  .then(() => console.log('DB 연결 및 동기화 성공'))
-  .catch(err => console.error('DB 연결 실패:', err));
+    matchService.startMatchProcessor();
 
-app.listen(PORT, () => {
-  console.log(`서버 실행 중: http://localhost:${PORT}`);
-});
+    app.listen(PORT, () => {
+      console.log(`Server running at http://localhost:${PORT}`);
+    });
+
+    process.on('SIGINT', async () => {
+      console.log('Shutting down server...');
+      process.exit(0);
+    });
+  } catch (err) {
+    console.error('DB connection failed:', err);
+    process.exit(1);
+  }
+}
+
+startServer();
