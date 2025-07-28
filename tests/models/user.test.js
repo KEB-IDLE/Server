@@ -1,3 +1,4 @@
+// User 모델 (DB 스키마)에 대한 유닛 테스트
 const { Sequelize, DataTypes } = require('sequelize');
 const defineUser = require('../../src/models/user');
 

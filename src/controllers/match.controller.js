@@ -19,7 +19,12 @@ exports.checkMatchStatus = async (req, res) => {
   try {
     const matchData = await matchService.checkMatchStatus(userId);
     if (matchData) {
-      res.json({ matched: true, opponentId: matchData.opponent, roomId: matchData.roomId });
+      res.json({
+        matched: true,
+        opponentId: matchData.opponent,
+        roomId: matchData.roomId,
+        start_at: matchData.start_at, // 추가
+      });
     } else {
       res.json({ matched: false });
     }
@@ -27,6 +32,7 @@ exports.checkMatchStatus = async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 };
+
 
 exports.startGame = async (req, res) => {
   const { userId } = req.body;

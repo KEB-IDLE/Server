@@ -4,7 +4,7 @@ exports.getGlobalRanking = async (req, res) => {
   try {
     const records = await UserRecord.findAll({
       order: [['rank_point', 'DESC']],
-      limit: 5,
+      limit: 10,
       include: [{
         model: UserProfile,
         attributes: ['nickname', 'profile_icon_id']

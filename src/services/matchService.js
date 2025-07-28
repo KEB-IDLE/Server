@@ -19,11 +19,12 @@ async function checkMatchStatus(userId) {
   if (!matchDataStr) return null;
 
   try {
-    return JSON.parse(matchDataStr);  // { opponent: 'userId', roomId: 'uuid' }
+    return JSON.parse(matchDataStr);  // { opponent, roomId, start_at }
   } catch {
     return null;
   }
 }
+
 
 async function clearMatch(userId) {
   const matchDataStr = await redis.get(`match:${userId}`);
@@ -71,19 +72,19 @@ async function pairUsers() {
   }
 
   const roomId = uuidv4();
+  const startAt = Math.floor(Date.now() / 1000) + 5; // 5초 뒤 시작
 
-  const matchData1 = JSON.stringify({ opponent: p2, roomId });
-  const matchData2 = JSON.stringify({ opponent: p1, roomId });
+  const matchData1 = JSON.stringify({ opponent: p2, roomId, start_at: startAt });
+  const matchData2 = JSON.stringify({ opponent: p1, roomId, start_at: startAt });
 
-  // TTL 60초 설정 (게임 시작 후 별도 삭제 권장)
   await redis.set(`match:${p1}`, matchData1, { EX: 60 });
   await redis.set(`match:${p2}`, matchData2, { EX: 60 });
 
-  // 게임룸에는 플레이어 정보만 저장
-  await redis.set(`gameRoom:${roomId}`, JSON.stringify({ players: [p1, p2] }));
+  await redis.set(`gameRoom:${roomId}`, JSON.stringify({ players: [p1, p2], start_at: startAt }));
 
-  console.log(`매칭 완료: ${p1} vs ${p2} (roomId: ${roomId})`);
+  console.log(`매칭 완료: ${p1} vs ${p2} (roomId: ${roomId}, start_at: ${startAt})`);
 }
+
 
 function startMatchProcessor() {
   setInterval(pairUsers, 2000);
