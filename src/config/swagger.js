@@ -14,8 +14,22 @@ const options = {
         url: 'http://localhost:3000/api',
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
   },
-  apis: [__dirname + '/../routes/*.js'],
+  apis: [__dirname + '/../routes/*.js']
 };
 
 const swaggerSpec = swaggerJSDoc(options);
