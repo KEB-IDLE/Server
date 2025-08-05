@@ -12,7 +12,9 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/your-username/your-repo.git'
+                git branch: 'main', 
+                url: 'https://github.com/KEB-IDLE/Server.git', // 깃허브 url
+                credentialsId: 'github-cred'
             }
         }
 
