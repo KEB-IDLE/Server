@@ -5,7 +5,7 @@ pipeline {
         IMAGE_NAME = "myserver"
         DOCKERHUB_TAG = "jamsik/myserver:latest"
         REMOTE_USER = "ubuntu"
-        REMOTE_HOST = "13.61.174.133" // ✨ 여기에 EC2 퍼블릭 IP 입력
+        REMOTE_HOST = "13.61.174.133" // EC2 퍼블릭 IP
         REMOTE_DIR = "/home/ubuntu"
     }
 
@@ -13,19 +13,18 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 git branch: 'main', 
-                url: 'https://github.com/KEB-IDLE/Server.git', // 깃허브 url
+                url: 'https://github.com/KEB-IDLE/Server.git',
                 credentialsId: 'github-cred'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                dir('server') {
-                    sh """
-                        docker build -t ${IMAGE_NAME} .
-                        docker tag ${IMAGE_NAME} ${DOCKERHUB_TAG}
-                    """
-                }
+                // 최상단 경로에서 빌드
+                sh """
+                    docker build -t ${IMAGE_NAME} .
+                    docker tag ${IMAGE_NAME} ${DOCKERHUB_TAG}
+                """
             }
         }
 
