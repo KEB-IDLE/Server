@@ -11,7 +11,6 @@ if (fs.existsSync('.env.local')) {
 
 const app = require('./app');
 const { sequelize } = require('./models');
-const matchService = require('./services/matchService');
 
 const PORT = process.env.PORT || 3000;
 
@@ -19,8 +18,6 @@ async function startServer() {
   try {
     await sequelize.sync({ alter: true });
     console.log('DB connection and synchronization successful');
-
-    matchService.startMatchProcessor();
 
     app.listen(PORT, () => {
       console.log(`Server running at http://localhost:${PORT}`);

@@ -13,7 +13,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 git branch: 'main', 
-                url: 'https://github.com/KEB-IDLE/Server.git',
+                url: 'https://github.com/KEB-IDLE/Server.git',  // Github 주소
                 credentialsId: 'github-cred'
             }
         }
