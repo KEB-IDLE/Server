@@ -34,7 +34,7 @@ const authController = require('../controllers/auth.controller');
  *                 example: password123
  *               nickname:
  *                 type: string
- *                 example: 재식이
+ *                 example: usernickname
  *     responses:
  *       201:
  *         description: 회원가입 성공
