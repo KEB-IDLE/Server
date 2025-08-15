@@ -8,7 +8,6 @@ db.User = require('./user')(sequelize, Sequelize.DataTypes);
 db.UserProfile = require('./userprofile')(sequelize, Sequelize.DataTypes);
 db.UserRecord = require('./userrecord')(sequelize, Sequelize.DataTypes);
 db.Match = require('./match')(sequelize, Sequelize.DataTypes);
-db.MatchParticipant = require('./matchparticipant')(sequelize, Sequelize.DataTypes);
 db.UserProfileIcon = require('./userprofileicon')(sequelize, Sequelize.DataTypes);  
 
 // 모델 관계 설정 (Association)
@@ -28,13 +27,13 @@ db.UserProfileIcon.belongsTo(db.User, { foreignKey: 'user_id' });
 // UserRecord N:1 UserProfile (UserRecord는 UserProfile의 외래키 user_id를 참조, user_id를 기준으로 연결)
 db.UserRecord.belongsTo(db.UserProfile, { foreignKey: 'user_id', targetKey: 'user_id' });
 
-// Match 1:N MatchParticipant (하나의 매치에 여러 참가자)
-db.Match.hasMany(db.MatchParticipant, { foreignKey: 'match_id' });
-db.MatchParticipant.belongsTo(db.Match, { foreignKey: 'match_id' });
+// Match -> User (승자/패자 관계)
+db.Match.belongsTo(db.User, { foreignKey: 'winner_id', as: 'winner', onDelete: 'SET NULL' });
+db.Match.belongsTo(db.User, { foreignKey: 'loser_id', as: 'loser', onDelete: 'SET NULL' });
 
-// User 1:N MatchParticipant (사용자는 여러 매치 참가자 기록을 가질 수 있음)
-db.User.hasMany(db.MatchParticipant, { foreignKey: 'user_id' });
-db.MatchParticipant.belongsTo(db.User, { foreignKey: 'user_id' });
+// User -> Match (승리/패배 기록)
+db.User.hasMany(db.Match, { foreignKey: 'winner_id', as: 'wins' });
+db.User.hasMany(db.Match, { foreignKey: 'loser_id', as: 'losses' });
 
 // Sequelize 인스턴스 및 라이브러리 export
 db.sequelize = sequelize;

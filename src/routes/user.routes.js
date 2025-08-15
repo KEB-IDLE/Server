@@ -1,17 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const authenticateToken = require('../middlewares/auth.middleware');
-
 const userController = require('../controllers/user.controller');
 const userIconController = require('../controllers/userIcon.controller');
 const userRecordController = require('../controllers/userRecord.controller');
 
 /**
  * @swagger
- * /user:
+ * tags:
+ *   name: 사용자
+ *   description: 프로필, 아이콘, 전적 등 사용자 관련 API
+ */
+
+/**
+ * @swagger
+ * /api/user:
  *   get:
  *     summary: 사용자 프로필 조회
- *     tags: [User]
+ *     tags: [사용자]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -24,10 +30,10 @@ router.get('/', authenticateToken, userController.getProfile);
 
 /**
  * @swagger
- * /user/icon:
+ * /api/user/icon:
  *   put:
  *     summary: 프로필 아이콘 변경
- *     tags: [User]
+ *     tags: [사용자]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -47,13 +53,12 @@ router.get('/', authenticateToken, userController.getProfile);
  */
 router.put('/icon', authenticateToken, userController.updateProfileIcon);
 
-// 이하 동일한 패턴으로 다른 라우터에도 추가
 /**
  * @swagger
- * /user/character:
+ * /api/user/character:
  *   put:
  *     summary: 프로필 캐릭터 변경
- *     tags: [User]
+ *     tags: [사용자]
  *     security:
  *       - bearerAuth: []
  */
@@ -61,10 +66,10 @@ router.put('/character', authenticateToken, userController.updateProfileCharacte
 
 /**
  * @swagger
- * /user/level:
+ * /api/user/level:
  *   put:
  *     summary: 레벨 변경
- *     tags: [User]
+ *     tags: [사용자]
  *     security:
  *       - bearerAuth: []
  */
@@ -72,10 +77,10 @@ router.put('/level', authenticateToken, userController.updateProfileLevel);
 
 /**
  * @swagger
- * /user/exp:
+ * /api/user/exp:
  *   put:
  *     summary: 경험치 변경
- *     tags: [User]
+ *     tags: [사용자]
  *     security:
  *       - bearerAuth: []
  */
@@ -83,10 +88,10 @@ router.put('/exp', authenticateToken, userController.updateProfileExp);
 
 /**
  * @swagger
- * /user/gold:
+ * /api/user/gold:
  *   put:
  *     summary: 골드 변경
- *     tags: [User]
+ *     tags: [사용자]
  *     security:
  *       - bearerAuth: []
  */
@@ -94,10 +99,10 @@ router.put('/gold', authenticateToken, userController.updateProfileGold);
 
 /**
  * @swagger
- * /user/icons:
+ * /api/user/icons:
  *   get:
  *     summary: 보유 아이콘 조회
- *     tags: [User]
+ *     tags: [사용자]
  *     security:
  *       - bearerAuth: []
  */
@@ -105,10 +110,10 @@ router.get('/icons', authenticateToken, userIconController.getOwnedIcons);
 
 /**
  * @swagger
- * /user/icons:
+ * /api/user/icons:
  *   post:
  *     summary: 아이콘 구매
- *     tags: [User]
+ *     tags: [사용자]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -125,10 +130,10 @@ router.post('/icons', authenticateToken, userIconController.purchaseIcon);
 
 /**
  * @swagger
- * /user/record:
+ * /api/user/record:
  *   get:
  *     summary: 전적 조회
- *     tags: [User]
+ *     tags: [사용자]
  *     security:
  *       - bearerAuth: []
  */
@@ -136,10 +141,10 @@ router.get('/record', authenticateToken, userRecordController.getRecord);
 
 /**
  * @swagger
- * /user/record:
+ * /api/user/record:
  *   put:
  *     summary: 전적 갱신
- *     tags: [User]
+ *     tags: [사용자]
  *     security:
  *       - bearerAuth: []
  *     requestBody:

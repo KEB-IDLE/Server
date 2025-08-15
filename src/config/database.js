@@ -1,4 +1,3 @@
-// ✅ config/database.js (환경 변수만 사용)
 const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize(

@@ -5,16 +5,16 @@ const authController = require('../controllers/auth.controller');
 /**
  * @swagger
  * tags:
- *   name: Auth
- *   description: 인증 관련 API
+ *   name: 인증
+ *   description: 회원가입, 로그인 등 인증 관련 API
  */
 
 /**
  * @swagger
- * /auth/register:
+ * /api/auth/register:
  *   post:
  *     summary: 사용자 회원가입
- *     tags: [Auth]
+ *     tags: [인증]
  *     requestBody:
  *       required: true
  *       content:
@@ -47,10 +47,10 @@ router.post('/register', authController.register);
 
 /**
  * @swagger
- * /auth/login:
+ * /api/auth/login:
  *   post:
  *     summary: 사용자 로그인
- *     tags: [Auth]
+ *     tags: [인증]
  *     requestBody:
  *       required: true
  *       content:

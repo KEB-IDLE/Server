@@ -5,13 +5,13 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'My Game API',
-      version: '1.0.0',
-      description: '게임 API 문서입니다',
+      title: '프로젝트 API 명세서',
+      version: 'v1.0.0',
+      description: '[Auto Battle Tactics] 게임 프로젝트의 API 문서입니다.',
     },
     servers: [
       {
-        url: 'http://localhost:3000/api',
+        url: 'https://jamsik.p-e.kr',
       },
     ],
     components: {
@@ -31,6 +31,7 @@ const options = {
   },
   apis: [__dirname + '/../routes/*.js']
 };
+
 
 const swaggerSpec = swaggerJSDoc(options);
 

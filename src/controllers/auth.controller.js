@@ -1,8 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { sequelize, User, UserProfile, UserRecord, UserProfileIcon } = require('../models');
-
-// asyncWrapper를 require 해주세요
 const asyncWrapper = require('../middlewares/asyncWrapper');
 
 exports.register = asyncWrapper(async (req, res) => {

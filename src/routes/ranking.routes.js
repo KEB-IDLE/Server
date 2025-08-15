@@ -1,3 +1,4 @@
+// routes/ranking.js
 const express = require('express');
 const router = express.Router();
 const authenticateToken = require('../middlewares/auth.middleware');
@@ -6,16 +7,16 @@ const rankingController = require('../controllers/ranking.controller');
 /**
  * @swagger
  * tags:
- *   name: Ranking
- *   description: 랭킹 관련 API
+ *   name: 랭킹
+ *   description: 글로벌 랭킹 조회 API
  */
 
 /**
  * @swagger
- * /ranking:
+ * /api/ranking:
  *   get:
  *     summary: 글로벌 랭킹 조회 (상위 10명)
- *     tags: [Ranking]
+ *     tags: [랭킹]
  *     security:
  *       - bearerAuth: []  # JWT 인증 필요
  *     responses:
