@@ -11,7 +11,7 @@ const options = {
     },
     servers: [
       {
-        url: 'https://jamsik.p-e.kr',
+        url: 'https://jamsik.p-e.kr/api',
       },
     ],
     components: {
