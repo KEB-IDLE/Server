@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     profile_char_id: { type: DataTypes.INTEGER, defaultValue: 1 },
     level: { type: DataTypes.INTEGER, defaultValue: 1 },
     exp: { type: DataTypes.INTEGER, defaultValue: 0 },
-    gold: { type: DataTypes.INTEGER, defaultValue: 0 },
+    gold: { type: DataTypes.INTEGER, defaultValue: 1000 },
   }, {
     tableName: 'user_profile',
     timestamps: false
